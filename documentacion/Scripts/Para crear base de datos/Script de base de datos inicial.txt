@@ -1,0 +1,79 @@
+-- ============================================
+-- CREACIÓN DE BASE DE DATOS
+-- ============================================
+
+CREATE DATABASE IF NOT EXISTS pokedex_db;
+USE pokedex_db;
+
+-- ============================================
+-- TABLA: Pokemon_Base
+-- ============================================
+
+CREATE TABLE Pokemon_Base (
+    No_Pokedex INT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    tipo1 VARCHAR(50) NOT NULL,
+    tipo2 VARCHAR(50),
+    Probabilidad_de_captura DECIMAL(5,2),
+    Habilidades TEXT
+);
+
+-- ============================================
+-- TABLA: Estadisticas
+-- Relación 1:1 con Pokemon_Base
+-- ============================================
+
+CREATE TABLE Estadisticas (
+    No_Pokedex INT PRIMARY KEY,
+    Puntos_de_salud INT,
+    ataque INT,
+    defensa INT,
+    ataque_especial INT,
+    defensa_especial INT,
+    velocidad INT,
+    total_base INT,
+
+    CONSTRAINT fk_estadisticas_pokemon
+    FOREIGN KEY (No_Pokedex)
+    REFERENCES Pokemon_Base(No_Pokedex)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- ============================================
+-- TABLA: Matriz_Combate
+-- Relación 1:1 con Pokemon_Base
+-- ============================================
+
+CREATE TABLE Matriz_Combate (
+    No_Pokedex INT PRIMARY KEY,
+
+    contraataque_insecto DECIMAL(3,2),
+    contraataque_siniestro DECIMAL(3,2),
+    contraataque_dragon DECIMAL(3,2),
+    contraataque_electrico DECIMAL(3,2),
+    contraataque_hada DECIMAL(3,2),
+    contraataque_lucha DECIMAL(3,2),
+    contraataque_fuego DECIMAL(3,2),
+    contraataque_volador DECIMAL(3,2),
+    contraataque_fantasma DECIMAL(3,2),
+    contraataque_planta DECIMAL(3,2),
+    contraataque_tierra DECIMAL(3,2),
+    contraataque_hielo DECIMAL(3,2),
+    contraataque_normal DECIMAL(3,2),
+    contraataque_veneno DECIMAL(3,2),
+    contraataque_psiquico DECIMAL(3,2),
+    contraataque_roca DECIMAL(3,2),
+    contraataque_acero DECIMAL(3,2),
+    contraataque_agua DECIMAL(3,2),
+
+    CONSTRAINT fk_combate_pokemon
+    FOREIGN KEY (No_Pokedex)
+    REFERENCES Pokemon_Base(No_Pokedex)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+);
+
+-- ============================================
+-- FIN DEL SCRIPT
+-- ============================================
