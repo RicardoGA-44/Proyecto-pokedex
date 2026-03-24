@@ -1,0 +1,71 @@
+-- 1. Crear la base de datos
+CREATE DATABASE IF NOT EXISTS pokemon_db;
+USE pokemon_db;
+
+-- ==========================================
+-- TABLAS MAESTRAS (Sin Dependencias)
+-- ==========================================
+
+-- Tabla: Tipos
+CREATE TABLE Tipos (
+    id_tipo INT PRIMARY KEY,
+    nombre_tipo VARCHAR(20) NOT NULL
+);
+
+-- Tabla: Habilidades
+CREATE TABLE Habilidades (
+    id_habilidad INT PRIMARY KEY,
+    nombre_habilidad VARCHAR(50) NOT NULL
+);
+
+-- Tabla: Pokemon_Base
+CREATE TABLE Pokemon_Base (
+    No_Pokedex INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    Probabilidad_de_captura TINYINT UNSIGNED -- Valores 0-255
+);
+
+-- ==========================================
+-- TABLAS DEPENDIENTES (Con Llaves Foráneas)
+-- ==========================================
+
+-- Tabla: Estadisticas (Relación 1:1 con Pokemon_Base)
+CREATE TABLE Estadisticas (
+    No_Pokedex INT PRIMARY KEY,
+    Puntos_de_salud SMALLINT UNSIGNED,
+    ataque SMALLINT UNSIGNED,
+    defensa SMALLINT UNSIGNED,
+    ataque_especial SMALLINT UNSIGNED,
+    defensa_especial SMALLINT UNSIGNED,
+    velocidad SMALLINT UNSIGNED,
+    total_base SMALLINT UNSIGNED,
+    FOREIGN KEY (No_Pokedex) REFERENCES Pokemon_Base(No_Pokedex) ON DELETE CASCADE
+);
+
+-- Tabla: Tipo_Efectividad (Relación N:N de Tipos consigo mismo)
+CREATE TABLE Tipo_Efectividad (
+    id_tipo_ataque INT,
+    id_tipo_defensa INT,
+    multiplicador DECIMAL(3, 1), -- Guarda 0.5, 1.0, 2.0, etc.
+    PRIMARY KEY (id_tipo_ataque, id_tipo_defensa),
+    FOREIGN KEY (id_tipo_ataque) REFERENCES Tipos(id_tipo),
+    FOREIGN KEY (id_tipo_defensa) REFERENCES Tipos(id_tipo)
+);
+
+-- Tabla: Pokemon_Tipo (Relación N:N entre Pokemon y Tipos)
+CREATE TABLE Pokemon_Tipo (
+    No_Pokedex INT,
+    id_tipo INT,
+    PRIMARY KEY (No_Pokedex, id_tipo),
+    FOREIGN KEY (No_Pokedex) REFERENCES Pokemon_Base(No_Pokedex) ON DELETE CASCADE,
+    FOREIGN KEY (id_tipo) REFERENCES Tipos(id_tipo)
+);
+
+-- Tabla: Pokemon_Habilidad (Relación N:N entre Pokemon y Habilidades)
+CREATE TABLE Pokemon_Habilidad (
+    No_Pokedex INT,
+    id_habilidad INT,
+    PRIMARY KEY (No_Pokedex, id_habilidad),
+    FOREIGN KEY (No_Pokedex) REFERENCES Pokemon_Base(No_Pokedex) ON DELETE CASCADE,
+    FOREIGN KEY (id_habilidad) REFERENCES Habilidades(id_habilidad)
+);
